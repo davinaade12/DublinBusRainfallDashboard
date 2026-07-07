@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="mb-4 fw-bold">Rainfall and Bus Punctuality Analysis</h2>
+
+<div class="row g-4">
+
+    <div class="col-md-3">
+        <div class="dashboard-card">
+            <h5>🌧 Rainfall</h5>
+            <h2>{{ weather.rainfall_mm }} mm</h2>
+            <small>{{ weather.rain_bin }}</small>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="dashboard-card">
+            <h5>🚌 Live Trips</h5>
+            <h2>{{ gtfs.entities }}</h2>
+            <small>Current GTFS updates</small>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="dashboard-card">
+            <h5>⏱ Average Delay</h5>
+            <h2>{{ gtfs.average_delay_minutes }} min</h2>
+            <small>Across live trip updates</small>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="dashboard-card">
+            <h5>⚠ Delayed Trips</h5>
+            <h2>{{ gtfs.delayed_trips }}</h2>
+            <small>More than 2 minutes late</small>
+        </div>
+    </div>
+
+</div>
+
+<div class="row mt-5">
+    <div class="col-lg-8">
+        <canvas id="rainfallDelayChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="graph-card">
+            <h4>Live Data Summary</h4>
+
+            <table class="table">
+                <tr>
+                    <td>Forecast Time</td>
+                    <td>{{ weather.forecast_time }}</td>
+                </tr>
+                <tr>
+                    <td>Rain Category</td>
+                    <td>{{ weather.rain_bin }}</td>
+                </tr>
+                <tr>
+                    <td>Average Delay</td>
+                    <td>{{ gtfs.average_delay_minutes }} min</td>
+                </tr>
+                <tr>
+                    <td>Delayed Trips</td>
+                    <td>{{ gtfs.delayed_trips }}</td>
+                </tr>
+                <tr>
+                    <td>Live Trips</td>
+                    <td>{{ gtfs.entities }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    const rainfallValue = {{ weather.rainfall_mm }};
+    const averageDelayValue = {{ gtfs.average_delay_minutes }};
+
+    const ctx = document.getElementById("rainfallDelayChart");
+
+    new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: ["Current Snapshot"],
+            datasets: [
+                {
+                    label: "Rainfall (mm)",
+                    data: [rainfallValue]
+                },
+                {
+                    label: "Average Delay (minutes)",
+                    data: [averageDelayValue]
+                }
+            ]
+        }
+    });
+</script>
+
+{% endblock %}

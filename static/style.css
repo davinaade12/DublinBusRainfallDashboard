@@ -1,0 +1,68 @@
+body{
+    background:#eef2f7;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+.dashboard-card{
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:25px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+}
+
+.dashboard-card:hover{
+
+    transform:translateY(-5px);
+
+}
+
+.dashboard-card h2{
+
+    font-size:42px;
+
+    font-weight:bold;
+
+    margin-top:15px;
+
+}
+
+.graph-card{
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:25px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+.graph-placeholder{
+
+    height:350px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:#f7f9fc;
+
+    border:3px dashed #cfd8e3;
+
+    margin-top:20px;
+
+    font-size:22px;
+
+    color:#777;
+
+}
