@@ -46,5 +46,13 @@
         "average_delay_minutes": 2.16,
         "delayed_trips": 501,
         "live_trips": 458
+    },
+    {
+        "timestamp": "2026-07-08 23:43:33",
+        "rainfall_mm": 0.0,
+        "rain_bin": "None",
+        "average_delay_minutes": 1.16,
+        "delayed_trips": 1695,
+        "live_trips": 1091
     }
 ]
