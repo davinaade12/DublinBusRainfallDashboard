@@ -54,5 +54,61 @@
         "average_delay_minutes": 1.16,
         "delayed_trips": 1695,
         "live_trips": 1091
+    },
+    {
+        "timestamp": "2026-07-09 00:16:11",
+        "rainfall_mm": 0.0,
+        "rain_bin": "None",
+        "average_delay_minutes": 0.51,
+        "delayed_trips": 1040,
+        "live_trips": 727
+    },
+    {
+        "timestamp": "2026-07-09 00:56:18",
+        "rainfall_mm": 0.0,
+        "rain_bin": "None",
+        "average_delay_minutes": 2.3,
+        "delayed_trips": 264,
+        "live_trips": 238
+    },
+    {
+        "timestamp": "2026-07-10 09:16:05",
+        "rainfall_mm": 0.0,
+        "rain_bin": "None",
+        "average_delay_minutes": 0.3,
+        "delayed_trips": 3596,
+        "live_trips": 3458
+    },
+    {
+        "timestamp": "2026-07-10 09:24:35",
+        "rainfall_mm": 0.0,
+        "rain_bin": "None",
+        "average_delay_minutes": 0.35,
+        "delayed_trips": 2735,
+        "live_trips": 3106
+    },
+    {
+        "timestamp": "2026-07-10 09:24:56",
+        "rainfall_mm": 0.0,
+        "rain_bin": "None",
+        "average_delay_minutes": 0.39,
+        "delayed_trips": 2716,
+        "live_trips": 3109
+    },
+    {
+        "timestamp": "2026-07-10 09:35:23",
+        "rainfall_mm": 0.0,
+        "rain_bin": "None",
+        "average_delay_minutes": 0.63,
+        "delayed_trips": 3376,
+        "live_trips": 3263
+    },
+    {
+        "timestamp": "2026-07-10 09:53:24",
+        "rainfall_mm": 0.0,
+        "rain_bin": "None",
+        "average_delay_minutes": 0.57,
+        "delayed_trips": 4168,
+        "live_trips": 3421
     }
 ]

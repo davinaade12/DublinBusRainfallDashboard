@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">
+            📊 Historical Rainfall & Bus Delay Analytics
+        </h2>
+
+        <a href="/export-csv" class="btn btn-success">
+            Export CSV
+        </a>
+    </div>
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-3">
+            <div class="dashboard-card h-100">
+                <h5>📁 Total Snapshots</h5>
+                <h2>{{ summary.total_snapshots }}</h2>
+                <small>Saved observations</small>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="dashboard-card h-100">
+                <h5>🌧 Average Rainfall</h5>
+                <h2>{{ summary.average_rainfall }} mm</h2>
+                <small>Across saved snapshots</small>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="dashboard-card h-100">
+                <h5>⏱ Average Delay</h5>
+                <h2>{{ summary.average_delay }} min</h2>
+                <small>Across saved snapshots</small>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="dashboard-card h-100">
+                <h5>⚠ Highest Delay</h5>
+                <h2>{{ summary.highest_delay }} min</h2>
+                <small>Maximum recorded average</small>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card shadow mb-4">
+
+        <div class="card-body">
+
+            <h4>📐 Rainfall & Delay Correlation</h4>
+
+            {% if correlation.correlation is not none %}
+
+                <h2>{{ correlation.correlation }}</h2>
+
+                <p class="mb-0">
+                    {{ correlation.interpretation }}
+                </p>
+
+            {% else %}
+
+                <p class="text-muted mb-0">
+                    {{ correlation.interpretation }}
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-lg-6">
+            <div class="card shadow h-100">
+                <div class="card-body">
+
+                    <h5>Average Delay Over Time</h5>
+
+                    <canvas id="delayChart"></canvas>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card shadow h-100">
+                <div class="card-body">
+
+                    <h5>Rainfall Over Time</h5>
+
+                    <canvas id="rainChart"></canvas>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card shadow my-4">
+
+        <div class="card-body">
+
+            <h5>Rainfall vs Average Delay</h5>
+
+            <canvas id="rainfallDelayScatter"></canvas>
+
+        </div>
+
+    </div>
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <h4 class="mb-0">Snapshot History</h4>
+
+                <a href="/export-csv" class="btn btn-success btn-sm">
+                    Download CSV
+                </a>
+
+            </div>
+
+            {% if snapshots %}
+
+            <div class="table-responsive">
+
+                <table class="table table-striped">
+
+                    <thead>
+
+                        <tr>
+                            <th>Time</th>
+                            <th>Rainfall</th>
+                            <th>Rain Category</th>
+                            <th>Average Delay</th>
+                            <th>Delayed Trips</th>
+                            <th>Live Trips</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {% for item in snapshots %}
+
+                        <tr>
+
+                            <td>{{ item.timestamp }}</td>
+                            <td>{{ item.rainfall_mm }} mm</td>
+                            <td>{{ item.rain_bin }}</td>
+                            <td>{{ item.average_delay_minutes }} min</td>
+                            <td>{{ item.delayed_trips }}</td>
+                            <td>{{ item.live_trips }}</td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+                <p>No snapshots collected yet.</p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const snapshots = {{ snapshots|tojson }};
+
+const labels = snapshots.map(s => s.timestamp);
+const rainfall = snapshots.map(s => Number(s.rainfall_mm));
+const delays = snapshots.map(s => Number(s.average_delay_minutes));
+
+new Chart(document.getElementById("delayChart"),{
+
+    type:"line",
+
+    data:{
+        labels:labels,
+        datasets:[{
+            label:"Average Delay",
+            data:delays,
+            borderWidth:3,
+            tension:0.4
+        }]
+    }
+
+});
+
+new Chart(document.getElementById("rainChart"),{
+
+    type:"line",
+
+    data:{
+        labels:labels,
+        datasets:[{
+            label:"Rainfall (mm)",
+            data:rainfall,
+            borderWidth:3,
+            tension:0.4
+        }]
+    }
+
+});
+
+const scatterData = snapshots.map(s => ({
+    x:Number(s.rainfall_mm),
+    y:Number(s.average_delay_minutes)
+}));
+
+new Chart(document.getElementById("rainfallDelayScatter"),{
+
+    type:"scatter",
+
+    data:{
+        datasets:[{
+            label:"Rainfall vs Delay",
+            data:scatterData,
+            pointRadius:6
+        }]
+    },
+
+    options:{
+        scales:{
+            x:{
+                title:{
+                    display:true,
+                    text:"Rainfall (mm)"
+                }
+            },
+            y:{
+                title:{
+                    display:true,
+                    text:"Average Delay (minutes)"
+                }
+            }
+        }
+    }
+
+});
+
+</script>
+
+{% endblock %}
