@@ -22,5 +22,37 @@
         "average_delay_minutes": 0.4,
         "delayed_trips": 960,
         "live_trips": 3129
+    },
+    {
+        "timestamp": "2026-07-17 10:28:50",
+        "rainfall_mm": 0.0,
+        "rain_bin": "None",
+        "average_delay_minutes": 1.5,
+        "delayed_trips": 1208,
+        "live_trips": 3213
+    },
+    {
+        "timestamp": "2026-07-17 10:32:35",
+        "rainfall_mm": 0.0,
+        "rain_bin": "None",
+        "average_delay_minutes": 0.94,
+        "delayed_trips": 944,
+        "live_trips": 2911
+    },
+    {
+        "timestamp": "2026-07-17 10:32:38",
+        "rainfall_mm": 0.0,
+        "rain_bin": "None",
+        "average_delay_minutes": 0.94,
+        "delayed_trips": 944,
+        "live_trips": 2911
+    },
+    {
+        "timestamp": "2026-07-17 10:32:41",
+        "rainfall_mm": 0.0,
+        "rain_bin": "None",
+        "average_delay_minutes": 0.94,
+        "delayed_trips": 944,
+        "live_trips": 2911
     }
 ]

@@ -51,7 +51,6 @@
     </div>
 
     <div class="card shadow mb-4">
-
         <div class="card-body">
 
             <h4>📐 Rainfall & Delay Correlation</h4>
@@ -73,7 +72,6 @@
             {% endif %}
 
         </div>
-
     </div>
 
     <div class="row g-4">
@@ -84,7 +82,9 @@
 
                     <h5>Average Delay Over Time</h5>
 
-                    <canvas id="delayChart"></canvas>
+                    <div style="height: 320px;">
+                        <canvas id="delayChart"></canvas>
+                    </div>
 
                 </div>
             </div>
@@ -96,7 +96,9 @@
 
                     <h5>Rainfall Over Time</h5>
 
-                    <canvas id="rainChart"></canvas>
+                    <div style="height: 320px;">
+                        <canvas id="rainChart"></canvas>
+                    </div>
 
                 </div>
             </div>
@@ -105,19 +107,18 @@
     </div>
 
     <div class="card shadow my-4">
-
         <div class="card-body">
 
             <h5>Rainfall vs Average Delay</h5>
 
-            <canvas id="rainfallDelayScatter"></canvas>
+            <div style="height: 380px;">
+                <canvas id="rainfallDelayScatter"></canvas>
+            </div>
 
         </div>
-
     </div>
 
     <div class="card shadow">
-
         <div class="card-body">
 
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -137,7 +138,6 @@
                 <table class="table table-striped">
 
                     <thead>
-
                         <tr>
                             <th>Time</th>
                             <th>Rainfall</th>
@@ -146,7 +146,6 @@
                             <th>Delayed Trips</th>
                             <th>Live Trips</th>
                         </tr>
-
                     </thead>
 
                     <tbody>
@@ -154,14 +153,12 @@
                     {% for item in snapshots %}
 
                         <tr>
-
                             <td>{{ item.timestamp }}</td>
                             <td>{{ item.rainfall_mm }} mm</td>
                             <td>{{ item.rain_bin }}</td>
                             <td>{{ item.average_delay_minutes }} min</td>
                             <td>{{ item.delayed_trips }}</td>
                             <td>{{ item.live_trips }}</td>
-
                         </tr>
 
                     {% endfor %}
@@ -179,87 +176,159 @@
             {% endif %}
 
         </div>
-
     </div>
 
 </div>
 
 <script>
+document.addEventListener("DOMContentLoaded", function () {
 
-const snapshots = {{ snapshots|tojson }};
+    const snapshots = {{ snapshots | tojson | safe }};
 
-const labels = snapshots.map(s => s.timestamp);
-const rainfall = snapshots.map(s => Number(s.rainfall_mm));
-const delays = snapshots.map(s => Number(s.average_delay_minutes));
-
-new Chart(document.getElementById("delayChart"),{
-
-    type:"line",
-
-    data:{
-        labels:labels,
-        datasets:[{
-            label:"Average Delay",
-            data:delays,
-            borderWidth:3,
-            tension:0.4
-        }]
+    if (typeof Chart === "undefined") {
+        console.error("Chart.js has not loaded.");
+        return;
     }
 
-});
-
-new Chart(document.getElementById("rainChart"),{
-
-    type:"line",
-
-    data:{
-        labels:labels,
-        datasets:[{
-            label:"Rainfall (mm)",
-            data:rainfall,
-            borderWidth:3,
-            tension:0.4
-        }]
+    if (!Array.isArray(snapshots) || snapshots.length === 0) {
+        console.log("No snapshot data is available for the charts.");
+        return;
     }
 
-});
+    const labels = snapshots.map(function (snapshot) {
+        return snapshot.timestamp;
+    });
 
-const scatterData = snapshots.map(s => ({
-    x:Number(s.rainfall_mm),
-    y:Number(s.average_delay_minutes)
-}));
+    const rainfall = snapshots.map(function (snapshot) {
+        return Number(snapshot.rainfall_mm || 0);
+    });
 
-new Chart(document.getElementById("rainfallDelayScatter"),{
+    const delays = snapshots.map(function (snapshot) {
+        return Number(snapshot.average_delay_minutes || 0);
+    });
 
-    type:"scatter",
+    const delayCanvas = document.getElementById("delayChart");
 
-    data:{
-        datasets:[{
-            label:"Rainfall vs Delay",
-            data:scatterData,
-            pointRadius:6
-        }]
-    },
+    if (delayCanvas) {
+        new Chart(delayCanvas, {
+            type: "line",
 
-    options:{
-        scales:{
-            x:{
-                title:{
-                    display:true,
-                    text:"Rainfall (mm)"
-                }
+            data: {
+                labels: labels,
+
+                datasets: [{
+                    label: "Average Delay (minutes)",
+                    data: delays,
+                    borderWidth: 3,
+                    tension: 0.3,
+                    pointRadius: 4
+                }]
             },
-            y:{
-                title:{
-                    display:true,
-                    text:"Average Delay (minutes)"
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+
+                        title: {
+                            display: true,
+                            text: "Average Delay (minutes)"
+                        }
+                    }
                 }
             }
-        }
+        });
     }
 
-});
+    const rainCanvas = document.getElementById("rainChart");
 
+    if (rainCanvas) {
+        new Chart(rainCanvas, {
+            type: "line",
+
+            data: {
+                labels: labels,
+
+                datasets: [{
+                    label: "Rainfall (mm)",
+                    data: rainfall,
+                    borderWidth: 3,
+                    tension: 0.3,
+                    pointRadius: 4
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+
+                        title: {
+                            display: true,
+                            text: "Rainfall (mm)"
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    const scatterData = snapshots.map(function (snapshot) {
+        return {
+            x: Number(snapshot.rainfall_mm || 0),
+            y: Number(snapshot.average_delay_minutes || 0)
+        };
+    });
+
+    const scatterCanvas = document.getElementById(
+        "rainfallDelayScatter"
+    );
+
+    if (scatterCanvas) {
+        new Chart(scatterCanvas, {
+            type: "scatter",
+
+            data: {
+                datasets: [{
+                    label: "Rainfall vs Average Delay",
+                    data: scatterData,
+                    pointRadius: 6
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                scales: {
+                    x: {
+                        beginAtZero: true,
+
+                        title: {
+                            display: true,
+                            text: "Rainfall (mm)"
+                        }
+                    },
+
+                    y: {
+                        beginAtZero: true,
+
+                        title: {
+                            display: true,
+                            text: "Average Delay (minutes)"
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
 </script>
 
 {% endblock %}
