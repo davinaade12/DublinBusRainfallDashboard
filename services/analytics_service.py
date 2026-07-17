@@ -2,6 +2,8 @@ import json
 import os
 from datetime import datetime
 
+from services.firebase_service import initialise_firebase
+
 DATA_FOLDER = "data"
 SNAPSHOT_FILE = os.path.join(DATA_FOLDER, "snapshots.json")
 
@@ -32,10 +34,36 @@ def save_snapshot(weather, gtfs):
     with open(SNAPSHOT_FILE, "w", encoding="utf-8") as file:
         json.dump(snapshots, file, indent=4)
 
+    try:
+        database = initialise_firebase()
+        database.collection("snapshots").add(snapshot)
+    except Exception as error:
+        print(f"Firebase save failed: {error}")
+
     return snapshot
 
 
 def load_snapshots():
+    try:
+        database = initialise_firebase()
+
+        documents = (
+            database.collection("snapshots")
+            .order_by("timestamp")
+            .stream()
+        )
+
+        firebase_snapshots = [
+            document.to_dict()
+            for document in documents
+        ]
+
+        if firebase_snapshots:
+            return firebase_snapshots
+
+    except Exception as error:
+        print(f"Firebase load failed: {error}")
+
     if not os.path.exists(SNAPSHOT_FILE):
         return []
 

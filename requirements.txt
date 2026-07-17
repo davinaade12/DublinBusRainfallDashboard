@@ -6,3 +6,5 @@ xmltodict
 protobuf
 gtfs-realtime-bindings
 firebase-admin
+pytest
+firebase-admin

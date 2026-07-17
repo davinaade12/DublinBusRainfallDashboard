@@ -8,6 +8,7 @@ from routes.dashboard import dashboard_bp
 from services.weather_service import fetch_weather
 from services.gtfs_service import fetch_gtfs_data
 from services.analytics_service import save_snapshot, load_snapshots
+from services.firebase_service import test_firebase_connection
 
 
 app = Flask(__name__)
@@ -81,6 +82,22 @@ def health():
         "application": "Dublin Bus Rainfall Dashboard"
     }
 
+@app.route("/firebase-test")
+def firebase_test():
+    try:
+        result = test_firebase_connection()
+
+        return {
+            "success": True,
+            "firebase": result
+        }
+
+    except Exception as error:
+        return {
+            "success": False,
+            "error": str(error)
+        }, 500
+    
 
 if __name__ == "__main__":
     print("===========================================")
